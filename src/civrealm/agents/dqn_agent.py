@@ -321,21 +321,26 @@ class DQNAgent(BaseAgent):
             return None
 
     def calculate_reward(self, info):
-        """Calcula la recompensa enfocada en expansión y progreso"""
+        """Calcula la recompensa enfocada en expansión y progreso, con penalizaciones por pérdidas"""
         try:
             reward = 0
             
-            # Recompensa por nuevas ciudades (alta prioridad)
+            # Recompensas y castigos por cambios en ciudades
             current_cities = info.get('city_data', {})
             new_cities = set(current_cities.keys()) - set(self.previous_cities.keys())
-            reward += len(new_cities) * 100  # Alta recompensa por nuevas ciudades
+            lost_cities = set(self.previous_cities.keys()) - set(current_cities.keys())
+            reward += len(new_cities) * 100  # Recompensa por nuevas ciudades
+            reward -= len(lost_cities) * 150  # Castigo por perder ciudades
             
-            # Recompensa por crecimiento de ciudades
-            for city_id, city_data in current_cities.items():
+            # Recompensas y castigos por cambios en población
+            for city_id in set(current_cities.keys()) | set(self.previous_cities.keys()):
                 prev_size = self.previous_cities.get(city_id, {}).get('size', 0)
-                current_size = city_data.get('size', 0)
+                current_size = current_cities.get(city_id, {}).get('size', 0) if city_id in current_cities else 0
+                
                 if current_size > prev_size:
-                    reward += (current_size - prev_size) * 20
+                    reward += (current_size - prev_size) * 20  # Recompensa por crecimiento
+                elif current_size < prev_size:
+                    reward -= (prev_size - current_size) * 30  # Castigo por pérdida de población
             
             # Recompensa por unidades productivas
             current_units = info.get('unit_data', {})
