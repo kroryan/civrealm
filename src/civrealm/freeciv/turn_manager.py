@@ -63,10 +63,18 @@ class TurnManager(object):
 
     def log_begin_turn(self):
         fc_logger.info('==============================================')
+        
+        # Verificar si tenemos acceso al ID del jugador de forma segura
+        player_id = "N/A"
+        if (self._turn_ctrls is not None and 
+            'player' in self._turn_ctrls and 
+            self._turn_ctrls['player'] is not None and
+            hasattr(self._turn_ctrls['player'], 'my_player_id')):
+            player_id = self._turn_ctrls['player'].my_player_id
+            
         fc_logger.info(
-            f"============== Begin turn: {self._turn:04d}. Port: {self.client_port}. Player: {self._turn_ctrls['player'].my_player_id} ==============")
+            f"============== Begin turn: {self._turn:04d}. Port: {self.client_port}. Player: {player_id} ==============")
         fc_logger.info('==============================================')
-        # print(f'\nBegin turn: {self._turn:04d}\n')
 
     def begin_turn(self, pplayer, info_controllers: Dict[str, CivPropController]):
         # self._turn_active = True

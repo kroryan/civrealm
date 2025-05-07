@@ -44,6 +44,7 @@ dependencies = [
     'websocket-client',
     'filelock>=3.12.2',
     'matplotlib',
+    'torch>=1.13.0',
     # The following packages are for parallel training
     'ray==2.6.3; python_version < "3.12"',
 ]
@@ -57,12 +58,12 @@ dev = [
 
 [project.scripts]
 test_civrealm = "civrealm.random_game:main"
+test_civrealm_DQNA = "civrealm.dqn_game:main"
 download_freeciv_web_image = "civrealm.freeciv.build_server:download_freeciv_web_image"
 start_freeciv_web_service = "civrealm.freeciv.build_server:start_freeciv_web_service"
 stop_freeciv_web_service = "civrealm.freeciv.build_server:stop_freeciv_web_service"
 build_freeciv_web_service = "civrealm.freeciv.build_server:build_freeciv_web_service"
 update_javascript_for_clean_screenshot = "civrealm.freeciv.build_server:update_javascript_for_clean_screenshot"
-
 
 [project.urls]
 Homepage = "https://github.com/bigai-ai/civrealm"
